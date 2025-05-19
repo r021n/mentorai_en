@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Answer</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      :root {
+        --primary: #009e61;
+        --orange: #ff7849;
+        --white: #ffffff;
+        --dark: #1a1a1a;
+      }
+
+      body {
+        background-color: #f5f5f5;
+      }
+
+      .navbar {
+        background-color: var(--white);
+        padding: 1rem 2rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 1000;
+      }
+
+      .nav-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary);
+        text-decoration: none;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 2rem;
+        list-style: none;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+        color: var(--dark);
+        font-weight: 500;
+        transition: color 0.3s ease;
+      }
+
+      .nav-links a:hover {
+        color: var(--primary);
+      }
+
+      .burger {
+        display: none;
+        cursor: pointer;
+      }
+
+      .burger div {
+        width: 25px;
+        height: 3px;
+        background-color: var(--dark);
+        margin: 5px;
+        transition: all 0.3s ease;
+      }
+
+      .main-content {
+        padding: 8rem 2rem 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .table-container {
+        width: 100%;
+        overflow-x: auto;
+        margin-top: 2rem;
+        background: var(--white);
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        min-width: 800px;
+      }
+
+      th {
+        background-color: var(--primary);
+        color: var(--white);
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+      }
+
+      th,
+      td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+      }
+
+      td {
+        max-height: 4.5em;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: normal;
+      }
+
+      tbody tr:hover {
+        background-color: #f8f8f8;
+      }
+
+      .score-container {
+        margin-top: 2rem;
+        padding: 1rem;
+        background: var(--white);
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .score-text {
+        font-weight: 600;
+        color: var(--dark);
+      }
+
+      .score-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary);
+      }
+
+      @media screen and (max-width: 768px) {
+        .burger {
+          display: block;
+        }
+
+        .nav-links {
+          position: fixed;
+          right: -100%;
+          top: 70px;
+          height: calc(100vh - 70px);
+          background-color: var(--white);
+          flex-direction: column;
+          width: 100%;
+          align-items: center;
+          padding: 2rem;
+          transition: right 0.5s ease;
+        }
+
+        .nav-links.active {
+          right: 0;
+        }
+
+        .burger.active .line1 {
+          transform: rotate(-45deg) translate(-5px, 6px);
+        }
+
+        .burger.active .line2 {
+          opacity: 0;
+        }
+
+        .burger.active .line3 {
+          transform: rotate(45deg) translate(-5px, -6px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="nav-container">
+        <a href="/dashboard" class="logo">MentorAI</a>
+        <div class="burger">
+          <div class="line1"></div>
+          <div class="line2"></div>
+          <div class="line3"></div>
+        </div>
+        <ul class="nav-links">
+          <li><a href="/faq">About Us</a></li>
+          <li><a href="/exercise">Exercise</a></li>
+          <li><a href="/dashboard">Dashboard</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main class="main-content">
+      <h1>My Answer List</h1>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Number</th>
+              <th>Question</th>
+              <th>Answer</th>
+              <th>Feedback</th>
+              <th>Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (answers.length === 0) { %>
+            <tr>
+              <td colspan="5" style="text-align: center">No answer yet</td>
+            </tr>
+            <% } else { %> <% answers.forEach((item, index) => { %>
+            <tr>
+              <td><%= index + 1%></td>
+              <td><%- item.questionText %></td>
+              <td><%= item.answer %></td>
+              <td><%= item.feedback %></td>
+              <td><%= item.score %></td>
+            </tr>
+            <% }); %> <% } %>
+          </tbody>
+        </table>
+      </div>
+      <div class="score-container">
+        <span class="score-text">Total Score:</span>
+        <span class="score-value"
+          ><%= Math.round((totalScore / (answers.length * 3)) * 100) %>%</span
+        >
+      </div>
+    </main>
+
+    <script>
+      const burger = document.querySelector(".burger");
+      const nav = document.querySelector(".nav-links");
+
+      burger.addEventListener("click", () => {
+        nav.classList.toggle("active");
+        burger.classList.toggle("active");
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FAQ - MentorAI</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      :root {
+        --primary: #009e61;
+        --orange: #ff7849;
+        --white: #ffffff;
+        --dark: #1a1a1a;
+      }
+
+      body {
+        background-color: #f5f5f5;
+      }
+
+      .navbar {
+        background-color: var(--white);
+        padding: 1rem 2rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 1000;
+      }
+
+      .nav-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary);
+        text-decoration: none;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 2rem;
+        list-style: none;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+        color: var(--dark);
+        font-weight: 500;
+        transition: color 0.3s ease;
+      }
+
+      .nav-links a:hover {
+        color: var(--primary);
+      }
+
+      .burger {
+        display: none;
+        cursor: pointer;
+      }
+
+      .burger div {
+        width: 25px;
+        height: 3px;
+        background-color: var(--dark);
+        margin: 5px;
+        transition: all 0.3s ease;
+      }
+
+      .main-content {
+        padding: 8rem 2rem 2rem;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      .faq-container {
+        background-color: var(--white);
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+      }
+
+      details {
+        margin-bottom: 1rem;
+        padding: 1rem;
+        border-radius: 5px;
+        background-color: #f8f8f8;
+        transition: all 0.3s ease;
+      }
+
+      details:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      summary {
+        font-weight: 600;
+        color: var(--primary);
+        cursor: pointer;
+        padding: 0.5rem 0;
+        position: relative;
+        list-style: none;
+      }
+
+      summary::-webkit-details-marker {
+        display: none;
+      }
+
+      summary::after {
+        content: '+';
+        position: absolute;
+        right: 0;
+        transition: transform 0.3s ease;
+      }
+
+      details[open] summary::after {
+        transform: rotate(45deg);
+      }
+
+      details p, details ul, details ol {
+        margin-top: 1rem;
+        color: var(--dark);
+        line-height: 1.6;
+      }
+
+      details ul, details ol {
+        padding-left: 1.5rem;
+      }
+
+      details li {
+        margin-bottom: 0.5rem;
+      }
+
+      details a {
+        color: var(--primary);
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+
+      details a:hover {
+        color: var(--orange);
+      }
+
+      @media screen and (max-width: 768px) {
+        .burger {
+          display: block;
+        }
+
+        .nav-links {
+          position: fixed;
+          right: -100%;
+          top: 70px;
+          height: calc(100vh - 70px);
+          background-color: var(--white);
+          flex-direction: column;
+          width: 100%;
+          align-items: center;
+          padding: 2rem;
+          transition: right 0.5s ease;
+        }
+
+        .nav-links.active {
+          right: 0;
+        }
+
+        .burger.active .line1 {
+          transform: rotate(-45deg) translate(-5px, 6px);
+        }
+
+        .burger.active .line2 {
+          opacity: 0;
+        }
+
+        .burger.active .line3 {
+          transform: rotate(45deg) translate(-5px, -6px);
+        }
+
+        .main-content {
+          padding: 6rem 1rem 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="nav-container">
+        <a href="/dashboard" class="logo">MentorAI</a>
+        <div class="burger">
+          <div class="line1"></div>
+          <div class="line2"></div>
+          <div class="line3"></div>
+        </div>
+        <ul class="nav-links">
+          <li><a href="/faq">About Us</a></li>
+          <li><a href="/dashboard">Dashboard</a></li>
+        </ul>
+      </div>
+    </nav>
+    <main class="main-content">
+      <div class="faq-container">
+      <details>
+        <summary>What is MentorAI?</summary>
+        <p>
+          MentorAI is a web-based application designed to help students in the learning process by providing feedback after students answer a question. This feedback is given based on students' answers to the questions that have been given.
+        </p>
+      </details>
+      <details>
+        <summary>What is the purpose of creating this application?</summary>
+        <ul>
+          <li>
+Provide timely and relevant feedback to students.
+</li>
+<li> Help students understand the subject matter better.</li>
+        </ul>
+      </details>
+      <details>
+        <summary>How does this app work?</summary>
+        <ol>
+          <li>
+            Students work on the practice questions provided in the application.
+          </li>
+          <li>
+            The system will correct the student's answers and provide appropriate feedback.
+          </li>
+          <li>
+            If the student's answer is correct, the application will provide suggestions and instructions to help students understand the advanced material.
+          </li>
+          <li>
+            If the student's answer is wrong, the application will guide the student to find the correct answer.
+          </li>
+        </ol>
+      </details>
+      <details>
+        <summary>Who Can Use This App?</summary>
+        <p>
+          This application can be used by students of all levels, from elementary school to high school. This application can also be used by teachers to help them in the learning process.
+        </p>
+      </details>
+      <details>
+        <summary>How to use this application?</summary>
+        <ul>
+          <li>
+            The user manual for teachers/admins can be downloaded at
+            <a
+              target="_blank"
+              href="https://drive.google.com/file/d/1dk-OW8_h8me6Wjr2mW3jUjPBGEP72diO/view?usp=sharing"
+              >this link</a
+            >
+          </li>
+          <li>
+            The student user manual can be downloaded at
+            <a
+              target="_blank"
+              href="https://drive.google.com/file/d/1bvt0F0u_oe3FGP3FonWc46CosFkd7oBq/view?usp=sharing"
+              >this link</a
+            >
+          </li>
+        </ul>
+      </details>
+    </div>
+
+    <script>
+      const burger = document.querySelector(".burger");
+      const nav = document.querySelector(".nav-links");
+
+      burger.addEventListener("click", () => {
+        nav.classList.toggle("active");
+        burger.classList.toggle("active");
+      });
+    </script>
+  </body>
+</html>

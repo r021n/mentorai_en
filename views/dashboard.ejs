@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - MentorAI</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      :root {
+        --primary: #009e61;
+        --orange: #ff7849;
+        --white: #ffffff;
+        --dark: #1a1a1a;
+      }
+
+      body {
+        background-color: #f5f5f5;
+      }
+
+      .navbar {
+        background-color: var(--white);
+        padding: 1rem 2rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 1000;
+      }
+
+      .nav-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary);
+        text-decoration: none;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 2rem;
+        list-style: none;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+        color: var(--dark);
+        font-weight: 500;
+        transition: color 0.3s ease;
+      }
+
+      .nav-links a:hover {
+        color: var(--primary);
+      }
+
+      .burger {
+        display: none;
+        cursor: pointer;
+      }
+
+      .burger div {
+        width: 25px;
+        height: 3px;
+        background-color: var(--dark);
+        margin: 5px;
+        transition: all 0.3s ease;
+      }
+
+      .main-content {
+        padding: 8rem 2rem 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .welcome-section {
+        text-align: center;
+      }
+
+      .welcome-title {
+        font-size: 2.5rem;
+        color: var(--dark);
+        margin-bottom: 1rem;
+      }
+
+      .welcome-text {
+        color: #666;
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.6;
+      }
+
+      .cta-button {
+        display: inline-block;
+        padding: 1rem 2rem;
+        background-color: var(--primary);
+        color: var(--white);
+        text-decoration: none;
+        border-radius: 50px;
+        font-weight: 600;
+        margin-top: 2rem;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .cta-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0, 158, 97, 0.3);
+      }
+
+      .logout-btn {
+        background-color: var(--orange);
+        color: var(--white);
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+      }
+
+      .logout-btn:hover {
+        background-color: #ff6b35;
+        transform: translateY(-2px);
+      }
+
+      @media screen and (max-width: 768px) {
+        .burger {
+          display: block;
+        }
+
+        .nav-links {
+          position: fixed;
+          right: -100%;
+          top: 70px;
+          height: calc(100vh - 70px);
+          background-color: var(--white);
+          flex-direction: column;
+          width: 100%;
+          align-items: center;
+          padding: 2rem;
+          transition: right 0.5s ease;
+        }
+
+        .nav-links.active {
+          right: 0;
+        }
+
+        .burger.active .line1 {
+          transform: rotate(-45deg) translate(-5px, 6px);
+        }
+
+        .burger.active .line2 {
+          opacity: 0;
+        }
+
+        .burger.active .line3 {
+          transform: rotate(45deg) translate(-5px, -6px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="nav-container">
+        <a href="/dashboard" class="logo">MentorAI</a>
+        <div class="burger">
+          <div class="line1"></div>
+          <div class="line2"></div>
+          <div class="line3"></div>
+        </div>
+        <% if (user) { %>
+        <ul class="nav-links">
+          <li><a href="/faq">About Us</a></li>
+          <li><a href="/exercise">Exercise</a></li>
+          <% if (user.role === 'admin') { %>
+          <li><a href="/topics">Edit Topic</a></li>
+          <% } %>
+          <li><a href="/logout" class="logout-btn">Logout</a></li>
+        </ul>
+        <% } else { %>
+        <ul class="nav-links">
+          <li><a href="/faq">About Us</a></li>
+          <li><a href="/login">Login</a></li>
+        </ul>
+        <% } %>
+      </div>
+    </nav>
+
+    <main class="main-content">
+      <div class="welcome-section">
+        <% if (user) { %>
+        <h1 class="welcome-title">Welcome, <%= user.username %>!</h1>
+        <p class="welcome-text">
+          Ready to take your knowledge to the next level? MentorAI is here as a
+          smart learning assistant that will guide you with personalized
+          feedback. Start your learning journey now!
+        </p>
+        <a href="/exercise" class="cta-button">Start Practice</a>
+        <% } else { %>
+        <h1 class="welcome-title">Welcome to MentorAI</h1>
+        <p class="welcome-text">
+          An AI-based practice platform that will help you learn more
+          effectively. Login to start your learning journey.
+        </p>
+        <a href="/login" class="cta-button">Login Now</a>
+        <% } %>
+      </div>
+    </main>
+
+    <script>
+      const burger = document.querySelector(".burger");
+      const nav = document.querySelector(".nav-links");
+
+      burger.addEventListener("click", () => {
+        nav.classList.toggle("active");
+        burger.classList.toggle("active");
+      });
+    </script>
+  </body>
+</html>

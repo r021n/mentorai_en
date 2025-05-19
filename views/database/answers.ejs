@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Answers Management</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #009e61;
+        --orange: #ff7849;
+        --white: #ffffff;
+        --dark: #1a1a1a;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        background-color: #f5f5f5;
+        color: var(--dark);
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+
+      h1 {
+        color: var(--primary);
+        margin-bottom: 2rem;
+        font-weight: 600;
+      }
+
+      .filter-form {
+        background: var(--white);
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+      }
+
+      .filter-form label {
+        font-weight: 500;
+        margin-right: 1rem;
+      }
+
+      .filter-form input {
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin-right: 2rem;
+        font-size: 0.9rem;
+      }
+
+      .table-container {
+        width: 100%;
+        overflow-x: auto;
+        background: var(--white);
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 800px;
+      }
+
+      thead {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+      }
+
+      th {
+        background-color: var(--primary);
+        color: var(--white);
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        padding: 1rem;
+      }
+
+      td {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid #eee;
+        max-height: 30px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      tbody tr:hover {
+        background-color: #f8f8f8;
+      }
+
+      button {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .editBtn {
+        background-color: var(--primary);
+        color: var(--white);
+      }
+
+      .editBtn:hover {
+        background-color: #008451;
+      }
+
+      #deleteSelectedBtn {
+        background-color: var(--orange);
+        color: var(--white);
+        margin-top: 1rem;
+      }
+
+      #deleteSelectedBtn:hover {
+        background-color: #ff6635;
+      }
+
+      /* Modal styles */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+
+      .modal-content {
+        background-color: var(--white);
+        margin: 10% auto;
+        padding: 2rem;
+        border-radius: 8px;
+        width: 90%;
+        max-width: 500px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      }
+
+      .modal-header {
+        color: var(--dark);
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        font-size: 1.25rem;
+      }
+
+      .modal-body input {
+        width: 100%;
+        padding: 0.75rem;
+        margin: 0.5rem 0 1rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+
+      .modal-actions {
+        margin-top: 1.5rem;
+        text-align: right;
+      }
+
+      .modal-actions button {
+        margin-left: 1rem;
+      }
+
+      /* Custom Notification */
+      .notification {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        padding: 1rem 1.5rem;
+        border-radius: 4px;
+        background: var(--white);
+        color: var(--dark);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transform: translateX(120%);
+        transition: transform 0.3s ease;
+        z-index: 1100;
+      }
+
+      .notification.success {
+        border-left: 4px solid var(--primary);
+      }
+
+      .notification.error {
+        border-left: 4px solid var(--orange);
+      }
+
+      .notification.show {
+        transform: translateX(0);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Manajemen Answers</h1>
+
+      <!-- Filter Form -->
+      <div class="filter-form">
+        <label>User ID: </label>
+        <input
+          type="text"
+          id="filterUserId"
+          value="<%= filters.userId || '' %>"
+          placeholder="Filter by user ID"
+        />
+        <label>Question ID: </label>
+        <input
+          type="text"
+          id="filterQuestionId"
+          value="<%= filters.questionId || '' %>"
+          placeholder="Filter by question ID"
+        />
+        <label>Topic ID: </label>
+        <input
+          type="text"
+          id="filterTopicId"
+          value="<%= filters.topicId || '' %>"
+          placeholder="Filter by topic ID"
+        />
+      </div>
+
+    <!-- Table Container -->
+    <div class="table-container">
+      <table id="answersTable">
+        <thead>
+          <tr>
+            <th><input type="checkbox" id="selectAll" /></th>
+            <th>ID</th>
+            <th>Answer</th>
+            <th>Feedback</th>
+            <th>Score</th>
+            <th>User ID</th>
+            <th>Question ID</th>
+            <th>Topic ID</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% answers.forEach(function(ans, index) { %>
+          <tr data-id="<%= ans.id %>">
+            <td>
+              <input
+                type="checkbox"
+                class="rowCheckbox"
+                data-id="<%= ans.id %>"
+              />
+            </td>
+            <td><%= ans.id %></td>
+            <td class="answerCell"><%= ans.answer %></td>
+            <td class="feedbackCell"><%= ans.feedback %></td>
+            <td class="scoreCell"><%= ans.score %></td>
+            <td class="userIdCell"><%= ans.userId %></td>
+            <td class="questionIdCell"><%= ans.questionId %></td>
+            <td class="topicIdCell"><%= ans.topicId %></td>
+            <td><button class="editBtn" data-id="<%= ans.id %>">Edit</button></td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+
+      <!-- Tombol Delete Selected -->
+      <button id="deleteSelectedBtn">Delete Selected</button>
+
+    <!-- Modal Konfirmasi Hapus -->
+    <div id="deleteModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">Confirm Delete</div>
+        <div class="modal-body">
+          Are you sure you want to delete the selected data?
+        </div>
+        <div class="modal-actions">
+          <button id="deleteCancelBtn">Cancel</button>
+          <button id="deleteConfirmBtn">Delete</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Edit Answer -->
+    <div id="editModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">Edit Answer</div>
+        <div class="modal-body">
+          <input type="hidden" id="editAnswerId" />
+          <div>
+            <label>Answer:</label>
+            <input type="text" id="editAnswer" style="width: 100%" />
+          </div>
+          <div>
+            <label>Feedback:</label>
+            <input type="text" id="editFeedback" style="width: 100%" />
+          </div>
+          <div>
+            <label>Score:</label>
+            <input type="number" id="editScore" style="width: 100%" />
+          </div>
+          <div>
+            <label>User ID:</label>
+            <input type="text" id="editUserId" style="width: 100%" />
+          </div>
+          <div>
+            <label>Question ID:</label>
+            <input type="text" id="editQuestionId" style="width: 100%" />
+          </div>
+          <div>
+            <label>Topic ID:</label>
+            <input type="text" id="editTopicId" style="width: 100%" />
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button id="editCancelBtn">Cancel</button>
+          <button id="editConfirmBtn">Confirm</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Custom Notification -->
+    <div id="notification" class="notification"></div>
+
+    <script>
+      // Fungsi untuk menampilkan notifikasi
+      function showNotification(message, type = 'success') {
+        const notification = document.getElementById('notification');
+        notification.textContent = message;
+        notification.className = `notification ${type}`;
+        notification.classList.add('show');
+        
+        setTimeout(() => {
+          notification.classList.remove('show');
+        }, 3000);
+      }
+
+      // -------------------------------
+      // FILTERING DENGAN DEBOUNCE 1 DETIK
+      let filterTimer;
+      const filterUserIdInput = document.getElementById("filterUserId");
+      const filterQuestionIdInput = document.getElementById("filterQuestionId");
+      const filterTopicIdInput = document.getElementById("filterTopicId");
+
+      const applyFilters = () => {
+        const queryParams = new URLSearchParams({
+          userId: filterUserIdInput.value,
+          questionId: filterQuestionIdInput.value,
+          topicId: filterTopicIdInput.value,
+        });
+        fetch("/database/answers/search?" + queryParams.toString())
+          .then((response) => response.json())
+          .then((data) => {
+            updateTable(data);
+          })
+          .catch((err) => {
+            console.error(err);
+            showNotification('Gagal memuat data', 'error');
+          });
+      };
+
+      filterUserIdInput.addEventListener("keyup", () => {
+        clearTimeout(filterTimer);
+        filterTimer = setTimeout(applyFilters, 1000);
+      });
+      filterQuestionIdInput.addEventListener("keyup", () => {
+        clearTimeout(filterTimer);
+        filterTimer = setTimeout(applyFilters, 1000);
+      });
+      filterTopicIdInput.addEventListener("keyup", () => {
+        clearTimeout(filterTimer);
+        filterTimer = setTimeout(applyFilters, 1000);
+      });
+
+      function updateTable(answers) {
+        const tbody = document.querySelector("#answersTable tbody");
+        tbody.innerHTML = "";
+        answers.forEach((ans, index) => {
+          const row = document.createElement("tr");
+          row.setAttribute("data-id", ans.id);
+          row.innerHTML = `
+          <td><input type="checkbox" class="rowCheckbox" data-id="${ans.id}" /></td>
+          <td>${ans.id}</td>
+          <td class="answerCell">${ans.answer}</td>
+          <td class="feedbackCell">${ans.feedback}</td>
+          <td class="scoreCell">${ans.score}</td>
+          <td class="userIdCell">${ans.userId}</td>
+          <td class="questionIdCell">${ans.questionId}</td>
+          <td class="topicIdCell">${ans.topicId}</td>
+          <td><button class="editBtn" data-id="${ans.id}">Edit</button></td>
+        `;
+          tbody.appendChild(row);
+        });
+      }
+
+      // -------------------------------
+      // SELECT ALL CHECKBOX
+      document
+        .getElementById("selectAll")
+        .addEventListener("change", function () {
+          const checked = this.checked;
+          document.querySelectorAll(".rowCheckbox").forEach((chk) => {
+            chk.checked = checked;
+          });
+        });
+
+      // -------------------------------
+      // DELETE SELECTED DENGAN MODAL KONFIRMASI
+      document
+        .getElementById("deleteSelectedBtn")
+        .addEventListener("click", function () {
+          const selectedIds = Array.from(
+            document.querySelectorAll(".rowCheckbox")
+          )
+            .filter((chk) => chk.checked)
+            .map((chk) => chk.getAttribute("data-id"));
+          if (selectedIds.length === 0) {
+            showNotification('No data selected!', 'error');
+            return;
+          }
+          document.getElementById("deleteModal").style.display = "block";
+
+          document.getElementById("deleteConfirmBtn").onclick = function () {
+            fetch("/database/answers/delete", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ ids: selectedIds }),
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                if (data.success) {
+                  selectedIds.forEach((id) => {
+                    const row = document.querySelector(`tr[data-id="${id}"]`);
+                    if (row) row.remove();
+                  });
+                  showNotification('Data deleted successfully');
+                } else {
+                  showNotification(data.message || 'Failed to delete data', 'error');
+                }
+                document.getElementById("deleteModal").style.display = "none";
+              })
+              .catch((err) => {
+                console.error(err);
+                showNotification('An error occurred while deleting data', 'error');
+                document.getElementById("deleteModal").style.display = "none";
+              });
+          };
+
+          document.getElementById("deleteCancelBtn").onclick = function () {
+            document.getElementById("deleteModal").style.display = "none";
+          };
+        });
+
+      // -------------------------------
+      // EDIT: MEMBUKA MODAL EDIT
+      document.addEventListener("click", function (e) {
+        if (e.target && e.target.classList.contains("editBtn")) {
+          const id = e.target.getAttribute("data-id");
+          const row = document.querySelector(`tr[data-id="${id}"]`);
+          document.getElementById("editAnswerId").value = id;
+          document.getElementById("editAnswer").value =
+            row.querySelector(".answerCell").textContent;
+          document.getElementById("editFeedback").value =
+            row.querySelector(".feedbackCell").textContent;
+          document.getElementById("editScore").value =
+            row.querySelector(".scoreCell").textContent;
+          document.getElementById("editUserId").value =
+            row.querySelector(".userIdCell").textContent;
+          document.getElementById("editQuestionId").value =
+            row.querySelector(".questionIdCell").textContent;
+          document.getElementById("editTopicId").value =
+            row.querySelector(".topicIdCell").textContent;
+
+          document.getElementById("editModal").style.display = "block";
+        }
+      });
+
+      document
+        .getElementById("editCancelBtn")
+        .addEventListener("click", function () {
+          document.getElementById("editModal").style.display = "none";
+        });
+
+      document
+        .getElementById("editConfirmBtn")
+        .addEventListener("click", function () {
+          const id = document.getElementById("editAnswerId").value;
+          const answer = document.getElementById("editAnswer").value;
+          const feedback = document.getElementById("editFeedback").value;
+          const score = document.getElementById("editScore").value;
+          const userId = document.getElementById("editUserId").value;
+          const questionId = document.getElementById("editQuestionId").value;
+          const topicId = document.getElementById("editTopicId").value;
+
+          fetch("/database/answers/edit", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id,
+              answer,
+              feedback,
+              score,
+              userId,
+              questionId,
+              topicId,
+            }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.success) {
+                const row = document.querySelector(`tr[data-id="${id}"]`);
+                row.querySelector(".answerCell").textContent = answer;
+                row.querySelector(".feedbackCell").textContent = feedback;
+                row.querySelector(".scoreCell").textContent = score;
+                row.querySelector(".userIdCell").textContent = userId;
+                row.querySelector(".questionIdCell").textContent = questionId;
+                row.querySelector(".topicIdCell").textContent = topicId;
+              } else {
+                alert(data.message || "Gagal mengupdate data.");
+              }
+              document.getElementById("editModal").style.display = "none";
+            })
+            .catch((err) => {
+              console.error(err);
+              document.getElementById("editModal").style.display = "none";
+            });
+        });
+    </script>
+  </body>
+</html>

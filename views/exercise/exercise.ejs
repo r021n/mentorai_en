@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Exercise</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #009e61;
+        --orange: #ff7849;
+        --white: #ffffff;
+        --dark: #1a1a1a;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        background-color: #f5f5f5;
+        padding: 1rem;
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: var(--white);
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        color: var(--primary);
+        margin-bottom: 1.5rem;
+        font-size: 2rem;
+        text-align: center;
+      }
+
+      .progress-container {
+        width: 100%;
+        background-color: #e0e0e0;
+        height: 8px;
+        border-radius: 4px;
+        margin-bottom: 2rem;
+      }
+
+      .progress-bar {
+        height: 100%;
+        background-color: var(--primary);
+        border-radius: 4px;
+        transition: width 0.3s ease;
+      }
+
+      .progress-text {
+        text-align: center;
+        color: var(--dark);
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+      }
+
+      #question-container {
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+      }
+
+      #question-text {
+        color: var(--dark);
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+      }
+
+      #question-image {
+        text-align: center;
+        margin: 1rem 0;
+      }
+
+      #question-image img {
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      #answerForm {
+        margin-bottom: 2rem;
+        display: flex;
+        flex-direction: column;
+      }
+
+      #answerText {
+        width: 100%;
+        padding: 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 1rem;
+        resize: vertical;
+        transition: border-color 0.3s ease;
+      }
+
+      #answerText:focus {
+        outline: none;
+        border-color: var(--primary);
+      }
+
+      #submitAnswerBtn {
+        background-color: var(--primary);
+        color: var(--white);
+        border: none;
+        padding: 0.8rem 1.5rem;
+        border-radius: 6px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-top: 1rem;
+      }
+
+      #submitAnswerBtn:hover {
+        background-color: #008652;
+      }
+
+      #loading {
+        display: none;
+        text-align: center;
+        margin: 1rem 0;
+      }
+
+      .loading-spinner {
+        display: inline-block;
+        width: 30px;
+        height: 30px;
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid var(--primary);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      #feedbackDiv {
+        margin-top: 1.5rem;
+        padding: 1rem;
+        border-radius: 8px;
+        background-color: rgba(0, 158, 97, 0.1);
+        color: var(--primary);
+        font-size: 1rem;
+        line-height: 1.6;
+        white-space: pre-wrap;
+      }
+
+      .navigation-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 2rem;
+      }
+
+      #prevBtn,
+      #nextBtn {
+        background-color: var(--white);
+        color: var(--primary);
+        border: 2px solid var(--primary);
+        padding: 0.8rem 1.5rem;
+        border-radius: 6px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      #prevBtn:hover,
+      #nextBtn:hover {
+        background-color: var(--primary);
+        color: var(--white);
+      }
+
+      #prevBtn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Exercise</h1>
+      <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      <div class="progress-text" id="progressText"></div>
+
+      <!-- Container untuk menampilkan soal -->
+      <div id="question-container">
+        <div id="question-image"></div>
+        <div id="question-text"></div>
+      </div>
+
+      <!-- Form untuk memasukkan jawaban -->
+      <form id="answerForm">
+        <textarea
+          name="answer"
+          id="answerText"
+          rows="5"
+          placeholder="Write your answer here"
+        ></textarea>
+        <input type="hidden" name="questionId" id="questionId" />
+        <button type="submit" id="submitAnswerBtn">Submit</button>
+        <div id="loading">
+          <div class="loading-spinner"></div>
+          <p>Assessing...</p>
+        </div>
+      </form>
+
+      <!-- Tempat menampilkan feedback jika ada -->
+      <div id="feedbackDiv"></div>
+
+      <!-- tombol navigasi prev/next/end -->
+      <div class="navigation-buttons">
+        <button id="prevBtn">Prev</button>
+        <button id="nextBtn">Next</button>
+      </div>
+    </div>
+    <script>
+      const questions = <%- questions %>;
+      const existingAnswers = <%- answers %>;
+
+      //   Ubah array menjadi mapping berdasarkan questionId
+      const answersMap = {};
+      existingAnswers.forEach((item) => {
+        answersMap[item.questionId] = item;
+      })
+
+      let currentIndex = 0;
+      const submitAnswerBtn = document.getElementById("submitAnswerBtn");
+      const feedbackDiv = document.getElementById("feedbackDiv");
+      const loading = document.getElementById("loading");
+
+      function updateProgress(index) {
+        const progress = ((index + 1) / questions.length) * 100;
+        document.getElementById('progressBar').style.width = `${progress}%`;
+        document.getElementById('progressText').textContent = `Question ${index + 1} from ${questions.length}`;
+      }
+
+      function displayQuestion(index) {
+        const question = questions[index];
+        // tampilkan konten soal (dengan render HTML)
+        updateProgress(index);
+        document.getElementById("question-text").innerHTML = question.question;
+
+        // tampilkan image jika ada imagePath
+        if(question.pathImage) {
+            document.getElementById("question-image").innerHTML =
+            `<img src="${question.pathImage}" alt="${question.imageDescription || ''}" style="max-width: 100%; max-heigth= 50vh">`;
+        } else {
+            document.getElementById("question-image").innerHTML = ""
+        }
+
+        // set hidden field untuk questionId
+        document.getElementById("questionId").value = question.id;
+
+        // pre-fill textarea jika sudah ada jawaban di answersMap
+        if(answersMap[question.id]) {
+            document.getElementById("answerText").value = answersMap[question.id].answer || "";
+            feedbackDiv.innerText = answersMap[question.id].feedback || "";
+
+            // sembunyikan submit button jika ada feedback
+            submitAnswerBtn.style.display = feedbackDiv.innerText ? "none" : "block";
+        } else {
+            document.getElementById("answerText").value = "";
+            feedbackDiv.innerText = "";
+
+            // tampilkan tombol submit jika tidak ada feedback
+            submitAnswerBtn.style.display = "block";
+        }
+
+        // tampilkan atau sembunyikan tombol prev serta ubah tombol next jika berada di indeks terakhir
+        document.getElementById("prevBtn").style.display = (index === 0) ? "none" : "inline-block";
+        if(index === questions.length - 1) {
+            document.getElementById("nextBtn").innerText = "End";
+        } else {
+            document.getElementById("nextBtn").innerText = "Next";
+        }
+      }
+
+      //   inisialisasi tampilan soal pertama
+      displayQuestion(currentIndex);
+
+      // fungsi untuk menampilkan feedback huruf demi huruf
+      function animatedFeedback(element, text, callback) {
+        let index = 0;
+        element.innerText = "";
+        let interval = setInterval(() => {
+          element.innerText += text[index];
+          index++;
+          if(index >= text.length) {
+            clearInterval(interval);
+            if (callback) callback();
+          }
+        }, 30);
+      }
+
+      //   submit jawaban secara AJAX
+      document.getElementById("answerForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const answer = document.getElementById("answerText").value;
+        const questionId = document.getElementById("questionId").value;
+
+        // hilangkan tombol submit dan munculkan loading
+        submitAnswerBtn.style.display = "none";
+        loading.style.display = "block";
+
+        // menggunakan fetch untuk submit data ke endpoint submitAnswer
+        fetch(window.location.pathname + "/submitAnswer", {
+            method: "POST",
+            headers: {
+                "Content-Type" : "application/json",
+            },
+            body: JSON.stringify({questionId: questionId, answer: answer})
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.success) {
+                // update mapping jawaban untuk soal saat ini
+                answersMap[questionId] = {answer: answer, feedback: data.feedback};
+
+                // cek apakah animasi feedback sudah pernah dijalankan untuk question ini
+                if(!sessionStorage.getItem("feedbackAnimated_" + questionId)) {
+                  animatedFeedback(feedbackDiv, data.feedback, () => {
+                    sessionStorage.setItem("feedbackAnimated_" + questionId, true);
+                  })
+                } else {
+                  feedbackDiv.innerText = data.feedback;
+                }
+
+                // hilangkan loading
+                loading.style.display = "none";
+            } else {
+                alert(data.message || "Failed to save data");
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert("An error occurred while sending the answer");
+        });
+      });
+
+      //   event listener untuk tombol prev
+      document.getElementById("prevBtn").addEventListener('click', () => {
+        if(currentIndex > 0) {
+            currentIndex--;
+            displayQuestion(currentIndex);
+        }
+      })
+
+      //   event listener untuk tombol next atau end
+      document.getElementById("nextBtn").addEventListener("click", () => {
+        if(currentIndex < questions.length - 1) {
+              currentIndex++;
+              displayQuestion(currentIndex)
+        } else {
+            // jika index terakhir maka akan diarahkan ke halaman /endExercise
+            window.location.href = "/endExercise";
+        }
+      })
+    </script>
+  </body>
+</html>

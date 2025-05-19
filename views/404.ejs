@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>404 - Page not found</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #009e61;
+        --orange: #ff7849;
+        --white: #ffffff;
+        --dark: #1a1a1a;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        background-color: var(--white);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .navbar {
+        background-color: var(--white);
+        padding: 1rem 2rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 1000;
+      }
+
+      .nav-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary);
+        text-decoration: none;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 2rem;
+        list-style: none;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+        color: var(--dark);
+        font-weight: 500;
+        transition: color 0.3s ease;
+      }
+
+      .nav-links a:hover {
+        color: var(--primary);
+      }
+
+      .burger {
+        display: none;
+        cursor: pointer;
+        width: 30px;
+        height: 20px;
+        position: relative;
+      }
+
+      .burger-line {
+        position: absolute;
+        width: 100%;
+        height: 2px;
+        background-color: var(--dark);
+        transition: all 0.3s ease;
+      }
+
+      .burger-line:nth-child(1) {
+        top: 0;
+      }
+      .burger-line:nth-child(2) {
+        top: 50%;
+        transform: translateY(-50%);
+      }
+      .burger-line:nth-child(3) {
+        bottom: 0;
+      }
+
+      .burger.active .burger-line:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 5px);
+      }
+
+      .burger.active .burger-line:nth-child(2) {
+        opacity: 0;
+      }
+
+      .burger.active .burger-line:nth-child(3) {
+        transform: rotate(-45deg) translate(7px, -7px);
+      }
+
+      .error-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem;
+        margin-top: 70px;
+        text-align: center;
+      }
+
+      .error-code {
+        font-size: 120px;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 1rem;
+        line-height: 1;
+      }
+
+      .error-message {
+        font-size: 24px;
+        color: var(--dark);
+        margin-bottom: 2rem;
+        max-width: 600px;
+      }
+
+      .back-button {
+        display: inline-block;
+        padding: 1rem 2rem;
+        background-color: var(--primary);
+        color: var(--white);
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .back-button:hover {
+        background-color: var(--orange);
+        transform: translateY(-2px);
+      }
+
+      @media (max-width: 768px) {
+        .burger {
+          display: block;
+        }
+
+        .nav-links {
+          position: fixed;
+          top: 70px;
+          left: -100%;
+          width: 100%;
+          height: calc(100vh - 70px);
+          background-color: var(--white);
+          flex-direction: column;
+          align-items: center;
+          padding: 2rem;
+          transition: left 0.3s ease;
+        }
+
+        .nav-links.active {
+          left: 0;
+        }
+
+        .error-code {
+          font-size: 80px;
+        }
+
+        .error-message {
+          font-size: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="nav-container">
+        <a href="/dashboard" class="logo">MentorAI</a>
+        <div class="burger">
+          <div class="burger-line"></div>
+          <div class="burger-line"></div>
+          <div class="burger-line"></div>
+        </div>
+        <ul class="nav-links">
+          <li><a href="/dashboard">Dashboard</a></li>
+          <li><a href="/faq">FAQ</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="error-container">
+      <div class="error-code">404</div>
+      <p class="error-message">
+        Sorry, the page you are looking for was not found..
+      </p>
+      <a href="/dashboard" class="back-button">Back to dashboard</a>
+    </div>
+
+    <script>
+      const burger = document.querySelector(".burger");
+      const navLinks = document.querySelector(".nav-links");
+
+      burger.addEventListener("click", () => {
+        burger.classList.toggle("active");
+        navLinks.classList.toggle("active");
+      });
+    </script>
+  </body>
+</html>

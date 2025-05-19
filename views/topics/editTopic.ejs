@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Topic Edit</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      :root {
+        --primary: #009e61;
+        --orange: #ff7849;
+        --white: #ffffff;
+        --dark: #1a1a1a;
+      }
+
+      body {
+        background-color: #f5f5f5;
+      }
+
+      .navbar {
+        background-color: var(--white);
+        padding: 1rem 2rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 1000;
+      }
+
+      .nav-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary);
+        text-decoration: none;
+      }
+
+      .main-content {
+        max-width: 800px;
+        margin: 100px auto 0;
+        padding: 2rem;
+        background: var(--white);
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        color: var(--dark);
+        margin-bottom: 2rem;
+        font-weight: 600;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--dark);
+        font-weight: 500;
+      }
+
+      input[type="text"] {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      input[type="text"]:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 2px rgba(0, 158, 97, 0.1);
+      }
+
+      button {
+        background-color: var(--primary);
+        color: var(--white);
+        padding: 0.75rem 2rem;
+        border: none;
+        border-radius: 5px;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      button:hover {
+        background-color: #008652;
+        transform: translateY(-1px);
+      }
+
+      .back-link {
+        display: inline-block;
+        margin-top: 1rem;
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .back-link:hover {
+        color: #008652;
+      }
+
+      .error-popup {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: var(--orange);
+        color: var(--white);
+        padding: 1rem 2rem;
+        border-radius: 5px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        z-index: 1001;
+        animation: slideIn 0.3s ease-out;
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="nav-container">
+        <a href="/topics" class="logo">MentorAI</a>
+      </div>
+    </nav>
+
+    <div class="main-content">
+      <h1>Topic Edit</h1>
+      <form action="/topics/edit/<%= topic.id %>" method="POST">
+        <div class="form-group">
+          <label>Topic Name:</label>
+          <input type="text" name="name" value="<%= topic.name %>" required />
+        </div>
+        <button type="submit">Update</button>
+      </form>
+      <a href="/topics" class="back-link">← Back to topic</a>
+    </div>
+
+    <% if(error) { %>
+    <div class="error-popup" id="errorPopup"><%= error %></div>
+    <script>
+      setTimeout(() => {
+        const errorPopup = document.getElementById("errorPopup");
+        if (errorPopup) {
+          errorPopup.style.animation = "slideIn 0.3s ease-out reverse";
+          setTimeout(() => {
+            errorPopup.remove();
+          }, 300);
+        }
+      }, 2000);
+    </script>
+    <% } %>
+  </body>
+</html>

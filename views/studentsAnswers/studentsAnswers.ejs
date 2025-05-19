@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Answer Report</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #009e61;
+        --orange: #ff7849;
+        --white: #ffffff;
+        --dark: #1a1a1a;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        background-color: var(--white);
+        color: var(--dark);
+        padding: 2rem;
+      }
+
+      h1 {
+        color: var(--primary);
+        margin-bottom: 2rem;
+        text-align: center;
+      }
+
+      .table-container {
+        max-width: 100%;
+        overflow-x: auto;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        margin-bottom: 2rem;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: var(--white);
+      }
+
+      thead {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+      }
+
+      th {
+        background-color: var(--primary);
+        color: var(--white);
+        font-weight: 600;
+        text-align: left;
+        padding: 1rem;
+        white-space: nowrap;
+      }
+
+      td {
+        padding: 0.5rem 1rem;
+        border-bottom: 1px solid #eee;
+        max-height: 50px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      tr:hover {
+        background-color: #f8f8f8;
+      }
+
+      a {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        background-color: var(--orange);
+        color: var(--white);
+        text-decoration: none;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+      }
+
+      a:hover {
+        background-color: #ff6635;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Student Answer Report</h1>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Student Name</th>
+            <% questions.forEach((question, index) => { %>
+            <!-- <th>Question ke <%= index + 1 %></th> -->
+            <th>Answer <%= index + 1 %></th>
+            <th>Feedback <%= index + 1 %></th>
+            <% }) %>
+            <th>Total Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if(students.length === 0){ %>
+          <tr>
+            <td colspan="<%= 2 + questions.length * + 1%>">
+              There is no student answer data
+            </td>
+          </tr>
+          <% } else { %> <% students.forEach((student, idx) => { %>
+          <tr>
+            <td><%= idx + 1 %></td>
+            <td><%= student.username %></td>
+            <% questions.forEach(question => { %>
+            <!-- tampilkan soal dari table questions -->
+            <!-- <td><%- question.question %></td> -->
+            <% if(student.answers[question.id]) { %>
+            <td><%= student.answers[question.id].answer%></td>
+            <td><%= student.answers[question.id].feedback%></td>
+            <% } else { %>
+            <td>-</td>
+            <td>-</td>
+            <% } %> <% }); %>
+            <td>
+              <%= Math.round((student.totalScore / (questions.length * 3)) *
+              100) %>
+            </td>
+          </tr>
+          <% }); %> <% } %>
+        </tbody>
+      </table>
+    </div>
+    <a href="/admin/download/<%= topicId %>">Download Student Answers</a>
+  </body>
+</html>
